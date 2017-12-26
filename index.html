@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>GitProfile</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+</head>
+
+<body ng-app="gitApp" ng-controller="gitCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 inputBar">
+                <div class="input-group">
+                    <input ng-keydown="onKeyPressFun($event)" ng-model="usernameTxt" id="inputTxtID" type="text" placeholder="&#xf002; Search for GitHub profile by username..." autofocus>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <!-- Button trigger modal -->
+            <button id="alertBtnID" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"></button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">GitProfile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            {{alertText}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="topLayerID" class="topLayer">
+                <img src="https://food-slacking.herokuapp.com/static/images/github.png">
+            </div>
+            <div class="row resultDiv">
+                <div class="col-md-3">
+                    <div class="card" style="width: 100%;">
+                        <img class="card-img-top" src="{{res.avatar_url}}">
+                        <div class="card-body">
+                            <h4 class="card-title">{{res.name}} <a class="proUrl" href="{{res.html_url}}" target="_blank">&#xf08e;</a></h4>
+                            <p class="card-text">{{res.bio}}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <span class="fontawsm">&#xf041;</span> {{res.location}}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{{res.blog}}" target="_blank" class="card-link">
+                                <span class="fontawsm">&#xf0c1;</span> {{res.blog}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item" aria-current="page">Overview</li>
+                            <li class="breadcrumb-item active" aria-current="page">Repositories
+                                <span class="badge badge-pill badge-primary">{{res.public_repos}}</span>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Followers
+                                <span class="badge badge-pill badge-primary">{{res.followers}}</span>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Following
+                                <span class="badge badge-pill badge-primary">{{res.following}}</span>
+                            </li>
+                        </ol>
+                    </nav>
+                    <input ng-model="filterTxt" class="form-control" id="filterTxtID" type="text" placeholder="&#xf0b0; Filter repositories..">
+                    <nav aria-label="...">
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Showing 6 out of {{res.public_repos}} repositories.</a></li>
+                            <li class="page-item {{check1}}" ng-click="checkNav()">
+                                <a class="page-link" href="#" tabindex="-1" ng-click="startLimit = startLimit - 5; startLimitOF = startLimitOF - 1">Previous</a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link" href="#">{{startLimitOF}} of {{res.public_repos/6 | number:0}}</a></li>
+                            <li class="page-item disabled" style="display:none;"><a class="page-link" href="#">{{resLim= (res.public_repos/6 | number:0)}}</a></li>
+                            <li class="page-item {{check2}}" ng-click="checkNav()">
+                                <a class="page-link" href="#" ng-click="startLimit = startLimit + 5; startLimitOF = startLimitOF + 1">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="row scrollRepos">
+                        <div ng-repeat="repos in resRep | limitTo : limitFixed : startLimit | filter:filterTxt" class="col-md-6">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body cardH">
+                                    <a style="font-size:20px;" href="{{repos.html_url}}" target="_blank" class="card-title">
+                                        <span style="color:#008975">&#xf1c9;</span> {{repos.name}}</a>
+                                    <br>
+                                    <br>
+                                    <div class="subRepInfo">
+                                        <h6><span class="a">&#xf111;</span> {{repos.language}}</h6>
+                                        <h6><span class="b">&#xf005;</span> {{repos.stargazers_count}}</h6>
+                                        <h6><span class="c">&#xf126;</span> {{repos.forks_count}}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <script src="Scripts/gitCtrl.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+</body>
+
+</html>
